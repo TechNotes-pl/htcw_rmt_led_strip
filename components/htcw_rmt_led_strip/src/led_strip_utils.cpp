@@ -6,63 +6,6 @@ using namespace esp_idf;
 
 static const char* TAG = "demo-utils";
 
-bool esp_idf::led_strip_initialize(uint8_t pin, size_t length, uint8_t rmt_channel, uint8_t rmt_interrupt,
-                          size_t ticks_lo_bit0, size_t ticks_hi_bit0, size_t ticks_lo_bit1, size_t ticks_hi_bit1,
-                          void **strip, void **encoder, void **channel)
-{
-    *encoder = nullptr;
-    *channel = nullptr;
-    if (length == 0)
-    {
-        *strip = nullptr;
-        return false;
-    }
-    *strip = malloc(length * 3);
-    if (*strip == nullptr)
-    {
-        return false;
-    }
-    memset(*strip, 0, length * 3);
-    rmt_channel_handle_t led_chan = NULL;
-    rmt_tx_channel_config_t tx_chan_config;
-    memset(&tx_chan_config, 0, sizeof(rmt_tx_channel_config_t));
-    tx_chan_config.clk_src = RMT_CLK_SRC_DEFAULT; // select source clock
-    tx_chan_config.gpio_num = (gpio_num_t)pin;
-    tx_chan_config.mem_block_symbols = 64; // increase the block size can make the LED less flickering
-    tx_chan_config.resolution_hz = RMT_LED_STRIP_RESOLUTION_HZ;
-    tx_chan_config.trans_queue_depth = 4; // set the number of transactions that can be pending in the background
-
-    if (ESP_OK != rmt_new_tx_channel(&tx_chan_config, &led_chan))
-    {
-        free(*strip);
-        *strip = nullptr;
-        return false;
-    }
-
-    rmt_encoder_handle_t led_encoder = NULL;
-    led_strip_encoder_config_t encoder_config = {
-        .resolution = RMT_LED_STRIP_RESOLUTION_HZ};
-    if (ESP_OK != rmt_new_led_strip_encoder(&encoder_config, ticks_lo_bit0, ticks_hi_bit0, ticks_lo_bit1, ticks_hi_bit1, &led_encoder))
-    {
-        free(*strip);
-        *strip = nullptr;
-        rmt_del_channel(led_chan);
-        return false;
-    }
-
-    if (ESP_OK != rmt_enable(led_chan))
-    {
-        free(*strip);
-        *strip = nullptr;
-        rmt_del_led_strip_encoder(led_encoder);
-        rmt_del_channel(led_chan);
-    }
-
-    *encoder = led_encoder;
-    *channel = led_chan;
-    return true;
-}
-
 size_t esp_idf::rmt_encode_led_strip(rmt_encoder_t *encoder, rmt_channel_handle_t channel, const void *primary_data, 
                             size_t data_size, rmt_encode_state_t *ret_state)
 {

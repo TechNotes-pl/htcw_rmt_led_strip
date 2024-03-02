@@ -27,27 +27,6 @@ namespace esp_idf
         rmt_symbol_word_t reset_code;
     } rmt_led_strip_encoder_t;
 
-    /**
-     * @brief Led strip initalization function
-     * 
-     * @param pin 
-     * @param length 
-     * @param rmt_channel 
-     * @param rmt_interrupt 
-     * @param ticks_lo_bit0 
-     * @param ticks_hi_bit0 
-     * @param ticks_lo_bit1 
-     * @param ticks_hi_bit1 
-     * @param strip 
-     * @param encoder 
-     * @param channel 
-     * @return true 
-     * @return false 
-     */
-    bool led_strip_initialize(uint8_t pin, size_t length, uint8_t rmt_channel, uint8_t rmt_interrupt,
-                              size_t ticks_lo_bit0, size_t ticks_hi_bit0, size_t ticks_lo_bit1, size_t ticks_hi_bit1,
-                              void **strip, void **encoder, void **channel);
-
     size_t rmt_encode_led_strip(rmt_encoder_t *encoder, rmt_channel_handle_t channel, const void *primary_data, 
                             size_t data_size, rmt_encode_state_t *ret_state);
     esp_err_t rmt_del_led_strip_encoder(rmt_encoder_t *encoder);

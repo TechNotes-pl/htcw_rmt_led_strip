@@ -37,7 +37,9 @@ extern "C" void app_main(void)
     const uint8_t blue = 0;
 
     ws2812 fls(LED_STRIP_GPIO_NUMBER, LED_STRIP_LED_NUMBERS);
-    fls.initialize();
+    bool res = fls.initialize();
+    printf("Initialization %s\n", res?"OK":"failed!!!");
+
     fls.color(0, red, green, blue);
     fls.update();
     vTaskDelay(pdMS_TO_TICKS(1000));
@@ -46,15 +48,15 @@ extern "C" void app_main(void)
     {
         ESP_LOGI(TAG, "Start demo loop");
 
-        for (uint8_t level = 0; level < 0xFF; level++)
+        for (uint8_t level = 0; level < 64; level++)
         {
             for (int i = 0; i < LED_STRIP_LED_NUMBERS; i++)
             {
-                fls.color(i, level, level, level);
+                fls.color(i, 0, 0, level);
             }
             /* Refresh the strip to send data */
             fls.update();
-            vTaskDelay(pdMS_TO_TICKS(200));
+            vTaskDelay(pdMS_TO_TICKS(50));
         }
     }
 
