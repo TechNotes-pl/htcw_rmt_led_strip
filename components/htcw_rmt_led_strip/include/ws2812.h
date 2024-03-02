@@ -1,6 +1,5 @@
 #pragma once
 
-#include <esp_idf_version.h>
 #include "led_strip.h"
 
 /****************************
@@ -20,12 +19,9 @@ namespace esp_idf
         uint8_t m_rmt_channel;
         uint8_t m_rmt_interrupt;
         void *m_strip;
-#if ESP_IDF_VERSION < ESP_IDF_VERSION_VAL(5, 0, 0)
-        void *m_rmt_items;
-#else
         void *m_encoder;
         void *m_channel;
-#endif
+
         ws2812(const ws2812 &rhs) = delete;
         ws2812 &operator=(const ws2812 &rhs) = delete;
         void do_move(ws2812 &rhs);

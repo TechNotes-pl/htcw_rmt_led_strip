@@ -50,11 +50,12 @@ bool ws2812::initialize()
     {
         return true;
     }
+
     if (m_length == 0)
     {
         return false;
     }
-#if ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5, 0, 0)
+
     return led_strip_initialize(m_pin, m_length,
                                 m_rmt_channel,
                                 m_rmt_interrupt,
@@ -65,9 +66,6 @@ bool ws2812::initialize()
                                 &m_strip,
                                 &m_encoder,
                                 &m_channel);
-#else
-    return led_strip_initialize(m_pin, m_length, m_rmt_channel, m_rmt_interrupt, (uint32_t **)&m_strip, &m_rmt_items);
-#endif
 }
 
 void ws2812::deinitialize()
@@ -76,18 +74,12 @@ void ws2812::deinitialize()
     {
         return;
     }
-#if ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5, 0, 0)
+
     rmt_del_led_strip_encoder((rmt_encoder_t *)m_encoder);
     rmt_del_channel((rmt_channel_handle_t)m_channel);
 
     free(m_strip);
     m_strip = nullptr;
-#else
-    rmt_driver_uninstall((rmt_channel_t)m_rmt_channel);
-    free(m_strip);
-    free(m_rmt_items);
-    m_strip = nullptr;
-#endif
 }
 
 void ws2812::update()
@@ -96,17 +88,12 @@ void ws2812::update()
     {
         return;
     }
-#if ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5, 0, 0)
+
     rmt_transmit_config_t tx_config;
     tx_config.flags.eot_level = 0;
     tx_config.loop_count = 0;
     rmt_tx_wait_all_done((rmt_channel_handle_t)m_channel, portMAX_DELAY);
     rmt_transmit((rmt_channel_handle_t)m_channel, (rmt_encoder_handle_t)m_encoder, m_strip, m_length * 3, &tx_config);
-#else
-    rmt_wait_tx_done((rmt_channel_t)m_rmt_channel, portMAX_DELAY);
-    led_strip_fill_rmt_items_ws2812((uint32_t *)m_strip, (rmt_item32_t *)m_rmt_items, m_length);
-    rmt_write_items((rmt_channel_t)m_rmt_channel, (rmt_item32_t *)m_rmt_items, (LED_STRIP_NUM_RMT_ITEMS_PER_LED * m_length), false);
-#endif
 }
 
 uint32_t ws2812::color(size_t index) const
@@ -115,14 +102,11 @@ uint32_t ws2812::color(size_t index) const
     {
         return 0;
     }
-#if ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5, 0, 0)
+
     size_t i = index * 3;
     return (((uint8_t *)m_strip)[i + 1] << 16) |
            (((uint8_t *)m_strip)[i + 0] << 8) |
            (((uint8_t *)m_strip)[i + 2]);
-#else
-    return ((uint32_t *)m_strip)[index];
-#endif
 }
 
 void ws2812::color(size_t index, uint32_t value)
@@ -131,14 +115,11 @@ void ws2812::color(size_t index, uint32_t value)
     {
         return;
     }
-#if ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5, 0, 0)
+
     int i = index * 3;
     ((uint8_t *)m_strip)[i + 1] = (value & 0xFF0000) >> 16;
     ((uint8_t *)m_strip)[i + 0] = (value & 0x00FF00) >> 8;
     ((uint8_t *)m_strip)[i + 2] = (value & 0x0000FF);
-#else
-    ((uint32_t *)m_strip)[index] = value;
-#endif
 }
 
 void ws2812::color(size_t index, uint8_t r, uint8_t g, uint8_t b)
@@ -154,7 +135,6 @@ void ws2812::color(size_t index, uint8_t r, uint8_t g, uint8_t b, uint8_t w)
 }
 
 #pragma endregion public methods
-
 
 void ws2812::do_move(ws2812 &rhs)
 {

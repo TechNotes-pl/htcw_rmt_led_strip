@@ -10,10 +10,12 @@
 #include "esp_log.h"
 #include "esp_err.h"
 
-//#define APP_DEMO
+#define APP_DEMO
 
 #ifdef APP_DEMO
-#include "rmt_led_strip.hpp"
+#include "ws2812.h"
+#include "sk6812.h"
+#include "apa106.h"
 using namespace esp_idf;
 #else
 #include "app_reference.h"
