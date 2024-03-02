@@ -1,1 +1,14 @@
 .piopm
+
+# Visual Studio
+.vscode
+.vs
+
+# ESP-IDF
+build/
+managed_components/
+sdkconfig
+sdkconfig.old
+__pycache__/
+
+dependencies.lock
