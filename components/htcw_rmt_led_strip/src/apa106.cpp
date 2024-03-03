@@ -4,7 +4,7 @@
  *
  */
 #include "apa106.h"
-#include "led_strip_utils.h"
+#include "rmt_encoder.h"
 
 using namespace esp_idf;
 

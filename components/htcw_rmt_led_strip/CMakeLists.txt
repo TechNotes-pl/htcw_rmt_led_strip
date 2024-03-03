@@ -2,7 +2,8 @@ set(srcs    "src/ws2812.cpp"
             "src/sk6812.cpp"
             "src/apa106.cpp"
             "src/led_strip.cpp"
-            "src/led_strip_utils.cpp"
+            "src/rmt_encoder.cpp"
+            "src/color.cpp"
             )
 
 idf_component_register( SRCS "${srcs}"

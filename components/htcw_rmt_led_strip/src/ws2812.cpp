@@ -4,20 +4,9 @@
  *
  */
 #include "ws2812.h"
-#include "led_strip_utils.h"
+#include "rmt_encoder.h"
 
 using namespace esp_idf;
-
-ws2812::ws2812(uint8_t pin, size_t length, uint8_t rmt_channel, uint8_t rmt_interrupt) : led_strip(pin, length, rmt_channel, rmt_interrupt)
-{
-}
-
-// ws2812::ws2812(ws2812 &&rhs) { do_move(rhs); }
-
-ws2812::~ws2812()
-{
-    deinitialize();
-}
 
 ws2812 &ws2812::operator=(ws2812 &&rhs)
 {

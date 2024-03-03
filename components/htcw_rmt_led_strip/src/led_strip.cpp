@@ -1,21 +1,11 @@
 #include "led_strip.h"
-#include "led_strip_utils.h"
+#include "rmt_encoder.h"
 #include <stddef.h>
 #include <inttypes.h>
 #include <driver/rmt_tx.h>
 #include <cstring>    // for memset
 
 using namespace esp_idf;
-
-#pragma region Constructor
-
-led_strip::led_strip(uint8_t pin, size_t length, uint8_t rmt_channel, uint8_t rmt_interrupt) : 
-    m_pin(pin), m_length(length), 
-    m_rmt_channel(rmt_channel), m_rmt_interrupt(rmt_interrupt), 
-    m_strip(nullptr), m_encoder(nullptr), m_channel(nullptr)
-{ }
-
-#pragma endregion Constructor
 
 bool led_strip::initialize()
 {
@@ -91,9 +81,20 @@ bool led_strip::initialize()
     return true;
 }
 
-size_t led_strip::length() const
+
+void led_strip::do_move(led_strip &rhs)
 {
-    return m_length;
+    m_pin = rhs.m_pin;
+    m_length = rhs.m_length;
+    rhs.m_length = 0;
+    m_rmt_channel = rhs.m_rmt_channel;
+    m_rmt_interrupt = rhs.m_rmt_channel;
+    m_strip = rhs.m_strip;
+    rhs.m_strip = nullptr;
+    m_encoder = rhs.m_encoder;
+    rhs.m_encoder = nullptr;
+    m_channel = rhs.m_channel;
+    rhs.m_channel = nullptr;
 }
 
 bool led_strip::initialized() const
@@ -123,7 +124,7 @@ void led_strip::update() {
     rmt_transmit((rmt_channel_handle_t)m_channel, (rmt_encoder_handle_t)m_encoder, m_strip, m_length * 3, &tx_config);
 }
 
-
+/*
 uint32_t led_strip::color(size_t index) const
 {
     if (m_strip == nullptr || index >= m_length)
@@ -160,3 +161,5 @@ void led_strip::color(size_t index, uint8_t r, uint8_t g, uint8_t b, uint8_t w)
     uint32_t value = (w << 24) | (r << 16) | (g << 8) | b;
     color(index, value);
 }
+
+*/

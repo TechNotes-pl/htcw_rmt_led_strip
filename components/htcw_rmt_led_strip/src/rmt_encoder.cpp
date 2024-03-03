@@ -1,5 +1,5 @@
 #include <cstring>    // for memset
-#include "led_strip_utils.h"
+#include "rmt_encoder.h"
 #include "esp_log.h"
 
 using namespace esp_idf;

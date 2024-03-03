@@ -4,7 +4,7 @@
  *
  */
 #include "sk6812.h"
-#include "led_strip_utils.h"
+#include "rmt_encoder.h"
 
 using namespace esp_idf;
 
@@ -24,6 +24,7 @@ sk6812::~sk6812()
 {
     deinitialize();
 }
+
 void sk6812::do_move(sk6812 &rhs)
 {
     m_pin = rhs.m_pin;

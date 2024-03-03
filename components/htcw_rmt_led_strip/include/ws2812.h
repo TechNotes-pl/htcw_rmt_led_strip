@@ -28,10 +28,13 @@ namespace esp_idf
          * @param rmt_channel channel number, default is 0
          * @param rmt_interrupt interrupt number, default is 23
          */
-        ws2812(uint8_t pin, size_t length, uint8_t rmt_channel = 0, uint8_t rmt_interrupt = 23);
-        
-        // ws2812(ws2812 &&rhs);
-        virtual ~ws2812();
+        ws2812(uint8_t pin, size_t length, uint8_t rmt_channel = 0, uint8_t rmt_interrupt = 23) : 
+                led_strip(pin, length, rmt_channel, rmt_interrupt)
+        { }
+
+        //ws2812(ws2812 &&rhs) { do_move(rhs); }
+
+        virtual ~ws2812() { deinitialize(); }
 
         ws2812 &operator=(ws2812 &&rhs);
 

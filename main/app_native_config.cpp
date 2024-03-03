@@ -1,4 +1,4 @@
-#include "app_reference.h"
+#include "app_native_config.h"
 #include "esp_log.h"
 #include "esp_err.h"
 
