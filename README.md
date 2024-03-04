@@ -27,7 +27,7 @@ using namespace esp_idf;
 
 ws2812 fls(LED_STRIP_GPIO_NUMBER, LED_STRIP_LED_NUMBERS);
 fls.initialize();
-fls.color(0, 0xFF, 0, 0);
+fls.set_color(0, 0xFF, 0, 0);
 fls.update();
 ```
 
